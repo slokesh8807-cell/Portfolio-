@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lokesh | PRO MAX Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+<style>
+body { margin:0; font-family:'Poppins',sans-serif; background:black; color:white;}
+canvas {position:fixed;top:0;left:0;z-index:-1;}
+header {text-align:center;padding:80px 20px;}
+header img {width:120px;border-radius:50%;border:3px solid cyan;}
+.typing {color:cyan;}
+nav {position:sticky;top:0;background:rgba(0,0,0,0.8);text-align:center;padding:10px;}
+nav a {color:cyan;margin:0 15px;text-decoration:none;}
+.section {padding:50px;margin:20px;background:rgba(255,255,255,0.05);border-radius:10px;}
+.project {background:rgba(255,255,255,0.1);padding:15px;margin:10px 0;border-radius:10px;}
+.toggle {position:fixed;top:10px;right:10px;cursor:pointer;}
+.light {background:white;color:black;}
+footer {text-align:center;padding:20px;}
+</style>
+</head>
+<body>
+
+<div class="toggle" onclick="toggleMode()">🌙</div>
+<canvas id="bg"></canvas>
+
+<header>
+<img src="https://i.pravatar.cc/150?img=3">
+<h1>Lokesh</h1>
+<p class="typing" id="typing"></p>
+</header>
+
+<nav>
+<a href="#about">About</a>
+<a href="#projects">Projects</a>
+<a href="#contact">Contact</a>
+</nav>
+
+<div class="section" id="about">
+<h2>About Me</h2>
+<p>I build modern websites and continuously improve my coding skills.</p>
+</div>
+
+<div class="section" id="projects">
+<h2>GitHub Projects</h2>
+<div id="repoList"></div>
+</div>
+
+<div class="section" id="contact">
+<h2>Contact</h2>
+<p>Email: slokesh8807@gmail.com</p>
+</div>
+
+<footer>
+<p>© 2026 Lokesh</p>
+</footer>
+
+<script>
+const roles=["Frontend Developer","Creative Coder","UI Enthusiast"];
+let i=0,j=0,text="",del=false;
+function type(){
+text=roles[i];
+document.getElementById("typing").innerText=text.substring(0,j);
+if(!del&&j<text.length)j++;
+else if(del&&j>0)j--;
+if(j==text.length)del=true;
+if(j==0){del=false;i=(i+1)%roles.length}
+setTimeout(type,100);
+}
+type();
+
+fetch("https://api.github.com/users/slokesh8807-cell/repos")
+.then(res=>res.json())
+.then(data=>{
+let output="";
+data.slice(0,5).forEach(repo=>{
+output+=`<div class='project'>
+<h3>${repo.name}</h3>
+<p>${repo.description||"No description"}</p>
+<a href='${repo.html_url}' target='_blank'>View Project</a>
+</div>`;
+});
+document.getElementById("repoList").innerHTML=output;
+});
+
+function toggleMode(){document.body.classList.toggle("light");}
+
+const c=document.getElementById("bg");
+const ctx=c.getContext("2d");
+c.width=innerWidth;c.height=innerHeight;
+let p=[];
+for(let i=0;i<80;i++){
+p.push({x:Math.random()*c.width,y:Math.random()*c.height,dx:Math.random()-0.5,dy:Math.random()-0.5});
+}
+function anim(){
+ctx.clearRect(0,0,c.width,c.height);
+p.forEach(e=>{
+ctx.fillStyle="cyan";
+ctx.fillRect(e.x,e.y,2,2);
+e.x+=e.dx;e.y+=e.dy;
+});
+requestAnimationFrame(anim);
+}
+anim();
+</script>
+
+</body>
+</html>
